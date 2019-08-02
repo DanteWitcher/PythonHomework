@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# final_task
+/final_task/build/
+/final_task/calculator.egg-info/
+/final_task/dist
+
+#dev
+.idea
+
