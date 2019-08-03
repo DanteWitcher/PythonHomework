@@ -13,5 +13,6 @@ setup(
         'console_scripts': [
             'pycalc = calculator.pycalc:main',
         ]
-    }
+    },
+    install_requires=['enum34']
 )

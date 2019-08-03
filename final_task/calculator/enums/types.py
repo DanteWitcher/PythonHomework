@@ -1,6 +1,6 @@
-from enum import Enum
+import enum
 
 
-class Types(Enum):
+class Types(enum.Enum):
     EVAL = 0,
     EXEC = 1
