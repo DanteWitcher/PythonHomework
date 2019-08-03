@@ -1,13 +1,17 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='calculator',
     version='0.1.0',
-    packages=['calculator'],
     url='',
     license='MIT',
     author='aliaksandr kakhanovich',
     author_email='kakhanovichal@gmail.com',
     description='simple calculator',
-    scripts=['bin/pycalc']
+    packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'pycalc = calculator.pycalc:main',
+        ]
+    }
 )
