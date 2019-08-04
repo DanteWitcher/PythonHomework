@@ -18,11 +18,19 @@ class Launcher:
 
         return None
 
+    def __error(self) -> None:
+        print('ERROR: `{:s}` is not correct operator'.format(self.input))
+
+        return None
+
     def run(self, run_type: Types) -> None:
         if run_type == Types.EXEC.name:
             self.__exec()
 
         if run_type == Types.EVAL.name:
             self.__eval()
+
+        if run_type == Types.ERROR.name:
+            self.__error()
 
         return None

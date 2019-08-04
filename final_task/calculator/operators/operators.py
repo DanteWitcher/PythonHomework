@@ -12,4 +12,15 @@ operators = (
         'value': 'log',
         'right_value': 'log'
     },
+    # TO DO: work around
+    {
+        'type': Types.ERROR,
+        'value': 'abs',
+        'right_value': 'abs'
+    },
+    {
+        'type': Types.EXEC,
+        'value': 'abs(',
+        'right_value': 'abs('
+    },
 )

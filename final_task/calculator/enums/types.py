@@ -1,6 +1,7 @@
-import enum
+from enum import Enum
 
 
-class Types(enum.Enum):
+class Types(Enum):
     EVAL = 0,
-    EXEC = 1
+    EXEC = 1,
+    ERROR = -1

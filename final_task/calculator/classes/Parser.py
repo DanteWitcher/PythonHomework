@@ -22,4 +22,7 @@ class Parser:
                 if operator['type'] == Types.EXEC:
                     self.type = Types.EXEC.name
 
+                if operator['type'] == Types.ERROR:
+                    self.type = Types.ERROR.name
+
         return None
