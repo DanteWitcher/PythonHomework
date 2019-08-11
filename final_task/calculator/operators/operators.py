@@ -1,26 +1,59 @@
-from ..enums.types import Types
+import string
 
+zero_operator = {
+    'value': '',
+    'priority': -1,
+    'operation': None
+}
 
-operators = (
-    {
-        'type': Types.EVAL,
+list_numbers = string.digits + str('.')
+list_operators = ['+', '-', '*', '/', '//', '%', '^']
+list_brackets = '()'
+
+dict_operators = {
+    'bracket_begin': {
+        'value': '(',
+        'priority': 0,
+        'operation': None
+    },
+    'bracket_end': {
+        'value': ')',
+        'priority': 0,
+        'operation': None
+    },
+    'add': {
+        'value': '+',
+        'priority': 1,
+        'operation': lambda a, b: a + b
+    },
+    'sub': {
+        'value': '-',
+        'priority': 1,
+        'operation': lambda a, b: a - b
+    },
+    'mul': {
+        'value': '*',
+        'priority': 2,
+        'operation': lambda a, b: a * b
+    },
+    'div': {
+        'value': '/',
+        'priority': 2,
+        'operation': lambda a, b: a / b
+    },
+    'fdiv': {
+        'value': '//',
+        'priority': 2,
+        'operation': lambda a, b: a // b
+    },
+    'mod': {
+        'value': '%',
+        'priority': 2,
+        'operation': lambda a, b: a % b
+    },
+    'pow': {
         'value': '^',
-        'right_value': '**'
-    },
-    {
-        'type': Types.EXEC,
-        'value': 'log',
-        'right_value': 'log'
-    },
-    # TO DO: work around
-    {
-        'type': Types.ERROR,
-        'value': 'abs',
-        'right_value': 'abs'
-    },
-    {
-        'type': Types.EXEC,
-        'value': 'abs(',
-        'right_value': 'abs('
-    },
-)
+        'priority': 3,
+        'operation': lambda a, b: a ** b
+    }
+}

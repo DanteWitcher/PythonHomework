@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import argparse
 
-from .classes.Launcher import Launcher
-from .classes.Parser import Parser
+from calculator.classes.Launcher import Launcher
 
 # name of cli
 key = 'pycalc'
@@ -19,13 +18,10 @@ def main():
 
     # Execute the parse_args() method
     args = my_parser.parse_args()
-    parser = Parser(args.__getattribute__(key))
-    parser.parse()
-    try:
-        Launcher(parser.get_str()).run(parser.get_type())
-    except (SyntaxError, NameError, TypeError) as e:
-        # TO DO: implement normal ErrorHandler
-        print('ERROR: ', e.__str__())
+    # Launch
+    args.__getattribute__(key)
+    Launcher(args.__getattribute__(key)).run()
+# 9
 
 
 if __name__ == '__main__':
