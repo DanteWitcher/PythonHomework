@@ -1,13 +1,14 @@
-from ..operators.operators import dict_operators, list_numbers, list_operators, zero_operator, list_brackets
+from ..operators.operators import dict_operators, list_words, \
+    list_numbers, list_operators, zero_operator, list_brackets, letters, list_math_numb
 from .Stack import Stack
 from .Executer import Executer
 
 
 last_added_char = {
     # number, operator, bracket
-    'last': ''
+    'last': '',
+    'word': ''
 }
-
 
 stack_numbers = Stack()
 stack_operations = Stack()
@@ -16,13 +17,6 @@ class Parser:
     def __init__(self, input_string: str):
         self.input = input_string
     # ( ( (22-33+3) -12)+1)
-    def remove_brackets(self):
-        first = self.input.split('(')
-
-        if (len(last) - len(first)) != 1:
-            print('ERROR: you have ')
-            return None
-
 
     def parse(self) -> None:
         for char in self.input:
@@ -37,8 +31,8 @@ class Parser:
                     last_added_char['last'] = 'number'
 
                 # CHAR IS OPERATOR
-                elif self.__is_operator(char):
-                    # self.__check_priority(char)
+                elif self.__is_operator(char) and char in '+-':
+                    operator['is_unary'] = True
                     stack_operations.push(operator)
                     last_added_char['last'] = 'operator'
 
@@ -46,6 +40,15 @@ class Parser:
                 elif self.__is_bracket(char):
                     self.__remove_brackets(operator)
                     last_added_char['last'] = 'bracket'
+
+                # CHAR IS LETTER
+                elif self.__is_word(char):
+                    if last_added_char['word'] in list_words or last_added_char['word'] in list_math_numb:
+                        stack_operations.push(self.__find_word(last_added_char['word']))
+                    else:
+                        last_added_char['word'] += char
+                    last_added_char['last'] = 'letter'
+
                 continue
 
             # LASTED IS NUMBER
@@ -71,6 +74,15 @@ class Parser:
                     else:
                         self.__remove_brackets(operator)
                         last_added_char['last'] = 'bracket'
+
+                # CHAR IS LETTER
+                elif self.__is_word(char):
+                    if char in list_math_numb:
+                        stack_numbers.push(self.__find_word(char)['operation'])
+                    else:
+                        last_added_char['word'] += char
+                    last_added_char['last'] = 'letter'
+
                 continue
 
             # LASTED IS OPERATOR
@@ -78,16 +90,9 @@ class Parser:
                 operator = self.__find_operator(char)
 
                 # CHAR IS OPERATOR
-                if self.__is_operator(char):
-                    if operator['value'] == '+' and stack_operations.get_last()['value'] == '+':
-                        stack_operations.overwrite_last(operator)
-                    elif operator['value'] == '-' and stack_operations.get_last()['value'] == '+':
-                        stack_operations.overwrite_last(dict_operators['sub'])
-                    elif operator['value'] == '-' and stack_operations.get_last()['value'] == '-':
-                        stack_operations.overwrite_last(dict_operators['add'])
-                    else:
-                        print('ERROR: you have two operators: {} and {} in your expression'
-                              .format(stack_operations.get_last()['value'], operator['value']))
+                if self.__is_operator(char) and char in '+-':
+                    operator['is_unary'] = True
+                    stack_operations.push(operator)
 
                 # CHAR IS BRACKET
                 elif self.__is_bracket(char):
@@ -102,8 +107,32 @@ class Parser:
                     if char == ')':
                         print('ERROR: '(' cant be before operator: {}'.format(operator)))
                     else:
+                        last_operator = stack_operations.get_last() or zero_operator
                         stack_numbers.push(char)
+
+                        while last_operator.get('is_unary'):
+                            last_number = stack_numbers.get_last()
+                            if last_operator['value'] == '-' and '-' not in str(last_number):
+                                stack_numbers.overwrite_last('-{:s}'.format(last_number))
+                            elif last_operator['value'] == '-' and '-' in str(last_number):
+                                stack_numbers.overwrite_last(str(last_number[1]))
+                            elif last_operator['value'] == '+' and '-' in str(last_number):
+                                stack_numbers.overwrite_last('{:s}'.format(last_number))
+                            elif last_operator['value'] == '+' and '-' not in str(last_number):
+                                stack_numbers.overwrite_last(str(last_number))
+                            stack_operations.pop()
+                            last_operator = stack_operations.get_last() or zero_operator
+
                         last_added_char['last'] = 'number'
+
+                # CHAR IS LETTER
+                elif self.__is_word(char):
+                    if char in list_math_numb:
+                        stack_numbers.push(self.__find_word(char)['operation'])
+                    else:
+                        last_added_char['word'] += char
+                    last_added_char['last'] = 'letter'
+
                 continue
 
             # LASTED IS BRACKET
@@ -117,8 +146,8 @@ class Parser:
 
                 # CHAR IS OPERATOR
                 elif self.__is_operator(char):
-                    if char in '+-':
-
+                    if stack_operations.get_last()['value'] == '(':
+                        operator['is_unary'] = True
                     stack_operations.push(operator)
                     last_added_char['last'] = 'operator'
 
@@ -126,30 +155,65 @@ class Parser:
                 elif self.__is_bracket(char):
                     self.__remove_brackets(operator)
                     last_added_char['last'] = 'bracket'
+
+                # CHAR IS LETTER
+                elif self.__is_word(char):
+                    if char in list_math_numb:
+                        stack_numbers.push(self.__find_word(char)['operation'])
+                    else:
+                        last_added_char['word'] += char
+                    last_added_char['last'] = 'letter'
+
                 continue
 
-            # for operator in dict_operators.values():
-            #     if operator['value'] == char:
-            #         if last_value['number'] is False:
-            #
-            #         else:
-            #             self.__check_priority(operator)
+            # LASTED IS LETTER
+            elif last_added_char['last'] == 'letter':
+                operator = self.__find_operator(char)
+
+                # CHAR IS NUMBER
+                if self.__is_number(char):
+                    stack_numbers.push(char)
+                    print("ERROR: blaaa")
+                    last_added_char['last'] = 'number'
+
+                # CHAR IS OPERATOR
+                elif self.__is_operator(char):
+                    # if last_added_char['word'] in list_math_numb or last_added_char['word'] in list_words:
+                    stack_operations.push(operator)
+                    # else:
+                    #     print('ERROR')
+                    last_added_char['last'] = 'operator'
+
+                # CHAR IS BRACKET
+                elif self.__is_bracket(char):
+                    if char == '(':
+                        stack_operations.push(operator)
+                    else:
+                        stack_operations.push(operator)
+                        print('ERROR')
+                    last_added_char['last'] = 'bracket'
+
+                # CHAR IS LETTER
+                elif self.__is_word(char):
+                    last_added_char['word'] += char
+
+                    if last_added_char['word'] in list_words:
+                        stack_operations.push(self.__find_word(last_added_char['word']))
+                        last_added_char['word'] = ''
+                    elif last_added_char['word'] in list_math_numb:
+                        stack_numbers.push(dict_operators[last_added_char['word']]['operation'])
+                        last_added_char['word'] = ''
+                    last_added_char['last'] = 'letter'
+
+                continue
 
         Executer(stack_numbers, stack_operations).finish_run()
 
-        # for res in stack_numbers.get():
-        #     print(res)
-        #
-        # for res in stack_operations.get():
-        #     print(res['value'])
-
-                # else:
-                #     print('ERROR: pycalc does\'t know the char is {:s}'.format(char))
     @staticmethod
     def __find_operator(char):
         for operator in dict_operators.values():
             if operator['value'] == char:
-                return operator
+                return operator.copy()
 
     @staticmethod
     def __is_number(value) -> bool:
@@ -162,6 +226,10 @@ class Parser:
     @staticmethod
     def __is_bracket(value) -> bool:
         return value in list_brackets
+
+    @staticmethod
+    def __is_word(value) -> bool:
+        return value in letters
 
     @staticmethod
     def __remove_brackets(operator) -> bool:
@@ -179,14 +247,14 @@ class Parser:
 
     def __check_priority(self, operator):
         last_operator = stack_operations.get_last() or zero_operator
-        # if selfx.__remove_brackets(operator) is True:
-        #     last_value['bracket'] = True
-        #     return
-
         if last_operator['priority'] >= operator['priority'] and self.__is_operator(operator['value']):
-
             Executer(stack_numbers, stack_operations).run_command()
-            # last_operator = stack_operations.get_last() or zero_operator
             self.__check_priority(operator)
         else:
             stack_operations.push(operator)
+
+    @staticmethod
+    def __find_word(word):
+        return dict_operators['{:s}'.format(word)].copy()
+
+

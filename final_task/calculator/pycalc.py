@@ -19,7 +19,7 @@ def main():
     # Execute the parse_args() method
     args = my_parser.parse_args()
     # Launch
-    args.__getattribute__(key)
+    # 1+(2+3*2)*3
     Launcher(args.__getattribute__(key)).run()
 # 9
 

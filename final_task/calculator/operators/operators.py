@@ -1,4 +1,5 @@
 import string
+import math
 
 zero_operator = {
     'value': '',
@@ -7,6 +8,10 @@ zero_operator = {
 }
 
 list_numbers = string.digits + str('.')
+letters = string.ascii_lowercase
+list_words = ['sin', 'cos', 'log']
+list_math_numb = ['pi', 'e']
+
 list_operators = ['+', '-', '*', '/', '//', '%', '^']
 list_brackets = '()'
 
@@ -55,5 +60,30 @@ dict_operators = {
         'value': '^',
         'priority': 3,
         'operation': lambda a, b: a ** b
-    }
+    },
+    'sin': {
+        'value': 'sin',
+        'priority': 4,
+        'operation': lambda a: math.sin(a)
+    },
+    'pi': {
+        'value': 'pi',
+        'priority': 4,
+        'operation': lambda: math.pi
+    },
+    'e': {
+        'value': 'e',
+        'priority': 4,
+        'operation': lambda: math.e
+    },
+    'log': {
+        'value': 'log',
+        'priority': 4,
+        'operation': lambda a: math.log(a)
+    },
+    'log10': {
+        'value': 'log10',
+        'priority': 4,
+        'operation': lambda a: math.log10(a)
+    },
 }

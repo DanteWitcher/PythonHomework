@@ -1,3 +1,7 @@
+hard_operators = ['sin', 'cos', 'log', 'log10', 'pow', 'abs', 'round']
+baskets = ['(', ')']
+
+
 class Brackets:
     def __init__(self, __input: str):
         self.__input = __input
@@ -35,7 +39,17 @@ class Brackets:
     def get(self):
         return self.__input
 
+    def is_simple_formula(self, string) -> bool:
+        for val in hard_operators:
 
-s = Brackets('(1+(((90-((-30+12))-12)))+9)')
+
+
+    def is_can_resolve(self, string) -> bool:
+
+
+
+
+
+s = Brackets('(1+(((90-((-30+12+con(8 + pow(3, 4))))-12*sin(3))))+9))')
 s.erase()
 print(s.get())

@@ -26,7 +26,7 @@ class Stack(Generic[T]):
     def concat_last_with(self, number: T) -> None:
         self.__stack[len(self.__stack) - 1] = str(self.__stack[len(self.__stack) - 1]) + str(number)
 
-    def get_last(self):
+    def get_last(self) -> T or None:
         if len(self.__stack) == 0:
             return None
         else:
